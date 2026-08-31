@@ -33,6 +33,7 @@ $adminRoles = ['SUPER_ADMIN', 'ADMIN'];
                 <?php if (in_array($role, $adminRoles, true)): ?>
                     <a href="<?php echo e(url('/promocoes')); ?>">Promoções</a>
                     <a href="<?php echo e(url('/usuarios')); ?>">Usuários</a>
+                    <a href="<?php echo e(url('/configuracoes')); ?>">Configurações</a>
                 <?php endif; ?>
             </nav>
         </div>

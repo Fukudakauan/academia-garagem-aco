@@ -138,6 +138,12 @@ if ($route === 'financeiro') {
     exit;
 }
 
+if ($route === 'configuracoes') {
+    require __DIR__ . '/../controllers/ConfiguracaoController.php';
+    (new ConfiguracaoController($pdo))->index();
+    exit;
+}
+
 if ($route === 'promocoes') {
     require __DIR__ . '/../controllers/PromocaoController.php';
     (new PromocaoController($pdo))->index();

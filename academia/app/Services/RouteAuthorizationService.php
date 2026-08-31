@@ -22,8 +22,12 @@ final class RouteAuthorizationService
             throw new HttpException(405, 'Exclusões exigem uma solicitação POST protegida.');
         }
 
-        $roles = self::rolesFor($route);
         AuthorizationService::requireAuthenticated();
+        if ($route === 'logout') {
+            return;
+        }
+
+        $roles = self::rolesFor($route);
         AuthorizationService::requireAnyRole($roles);
     }
 
