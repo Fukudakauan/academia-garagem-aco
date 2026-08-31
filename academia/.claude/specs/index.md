@@ -2,8 +2,4 @@
 
 | # | Título | Data | Status | Tasks |
 |---|---|---|---|---|
-| — | — | — | — | — |
-
----
-
-_Planejamentos de mudanças complexas e seus status de execução._
+| 0001 | Reformulação visual do painel Garagem Aço | 2026-08-31 | Concluída | 7 |

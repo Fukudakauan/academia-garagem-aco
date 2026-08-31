@@ -36,7 +36,13 @@ Sistema web de gestão da Academia Garagem Aço. Engloba painel administrativo, 
 
 Use `public/` como document root. No deploy, forneça variáveis de ambiente reais, execute migrations antes de publicar a nova versão e agende os comandos de vencimentos e geração de mensalidades. Nunca publique `.env`, `storage/` nem credenciais.
 
+O PostgreSQL pode ficar no Supabase usando a connection string exibida em `Connect` e `DB_SSLMODE=require`. A aplicação PHP continua precisando de um servidor com runtime PHP; um frontend separado no Cloudflare Pages exigiria uma API nova e uma migração de autenticação.
+
 ## Arquitetura e Decisões Técnicas
+
+- A grade pública de modalidades é mantida em `modalidade_horarios` e publicada pela landing; turmas são reservadas para aulas particulares.
+- Graduações registradas com valor geram cobranças avulsas do tipo `GRADUACAO`, vinculadas à matrícula do aluno.
+- A landing usa cache público invalidado quando a grade de modalidades é alterada; arquivos estáticos têm cache de longo prazo.
 
 - O backend permanece em PHP/PDO; o acesso a PostgreSQL é centralizado em repositories.
 - Sessões de navegador são a autenticação oficial. APIs de equipamentos usam credenciais próprias, nunca a sessão do usuário.

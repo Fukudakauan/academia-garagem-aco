@@ -1,12 +1,32 @@
 <?php
 // app/routes/web.php
+$route = $path ?? '';
+
+if ($route === '') {
+    $landingModalities = read_landing_schedule_cache();
+    $landingHasDatabase = $pdo instanceof PDO || $landingModalities !== [] || is_file(landing_schedule_cache_file());
+    if ($pdo instanceof PDO) {
+        try {
+            $landingRepository = new \Academia\Repositories\ModalityManagementRepository($pdo);
+            $landingModalities = $landingRepository->publicSchedule();
+            $cachePath = landing_schedule_cache_file();
+            if (!is_dir(dirname($cachePath))) {
+                mkdir(dirname($cachePath), 0775, true);
+            }
+            file_put_contents($cachePath, json_encode($landingModalities, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT), LOCK_EX);
+        } catch (\Throwable) {
+            $landingModalities = read_landing_schedule_cache();
+        }
+    }
+    require __DIR__ . '/../views/landing/index.php';
+    exit;
+}
+
 if (empty($pdo)) {
     http_response_code(500);
     echo 'Falta conexão com banco.';
     exit;
 }
-
-$route = $path ?? '';
 
 if ($route !== 'login') {
     \Academia\Services\RouteAuthorizationService::enforce($route);
@@ -15,6 +35,12 @@ if ($route !== 'login') {
 if (str_starts_with($route, 'login') || $route === 'login') {
     require __DIR__ . '/../controllers/AuthController.php';
     (new AuthController($pdo))->login();
+    exit;
+}
+
+if ($route === 'portal/dashboard') {
+    require __DIR__ . '/../controllers/PortalController.php';
+    (new PortalController($pdo))->dashboard();
     exit;
 }
 
@@ -48,9 +74,10 @@ if (preg_match('#^alunos/editar/(\d+)$#', $route, $m)) {
     exit;
 }
 
-if (preg_match('#^alunos/excluir/(\d+)$#', $route, $m)) {
+if (preg_match('#^alunos/(inativar|ativar|excluir)/(\d+)$#', $route, $m)) {
     require __DIR__ . '/../controllers/AlunoController.php';
-    (new AlunoController($pdo))->delete((int)$m[1]);
+    $action = (string) $m[1];
+    (new AlunoController($pdo))->{$action}((int) $m[2]);
     exit;
 }
 
@@ -72,9 +99,10 @@ if (preg_match('#^modalidades/editar/(\d+)$#', $route, $m)) {
     exit;
 }
 
-if (preg_match('#^modalidades/excluir/(\d+)$#', $route, $m)) {
+if (preg_match('#^modalidades/(inativar|ativar|excluir)/(\d+)$#', $route, $m)) {
     require __DIR__ . '/../controllers/ModalidadeController.php';
-    (new ModalidadeController($pdo))->delete((int)$m[1]);
+    $action = (string) $m[1];
+    (new ModalidadeController($pdo))->{$action}((int) $m[2]);
     exit;
 }
 

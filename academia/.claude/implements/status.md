@@ -2,8 +2,15 @@
 
 | # | Título | Data | Status | Arquivos Afetados |
 |---|---|---|---|---|
-| — | — | — | — | — |
-
----
+| 0010 | Cobrança automática de graduação | 2026-08-31 | Concluido | `database/migrations/20260831_000004_graduation_charges.php`, `app/Repositories/GraduationManagementRepository.php`, `app/Services/GraduationManagementService.php`, `app/controllers/GraduacaoController.php`, `app/views/graduacoes/`, `app/Repositories/StudentPortalRepository.php`, `app/views/portal/dashboard.php` |
+| 0009 | Otimização de carregamento e cache | 2026-08-31 | Concluido | `app/bootstrap.php`, `app/config/database.php`, `app/routes/web.php`, `app/Repositories/ModalityManagementRepository.php`, `public/router.php`, `public/.htaccess`, `public/css/landing.css` |
+| 0008 | Turmas reservadas para aulas particulares | 2026-08-31 | Concluido | `app/views/layouts/main.php`, `app/views/dashboard/index.php`, `app/views/turmas/`, `app/controllers/TurmaController.php` |
+| 0007 | Modalidades e grade semanal publicada | 2026-08-31 | Concluido | `database/migrations/20260831_000003_modality_schedules.php`, `app/Repositories/ModalityManagementRepository.php`, `app/Services/ModalityManagementService.php`, `app/controllers/ModalidadeController.php`, `app/views/modalidades/`, `app/views/landing/index.php`, `public/css/app.css`, `public/css/landing.css` |
+| 0006 | Dashboard operacional e financeiro mensal | 2026-08-31 | ConcluÃ­do | `app/Repositories/DashboardRepository.php`, `app/Repositories/DashboardRepositoryInterface.php`, `app/Services/DashboardService.php`, `app/controllers/DashboardController.php`, `app/views/dashboard/index.php`, `app/helpers.php`, `public/css/app.css`, `tests/Unit/DashboardServiceTest.php` |
+| 0001 | Landing page pública Garagem Aço | 2026-08-31 | Concluído | `app/bootstrap.php`, `public/index.php`, `app/routes/web.php`, `app/views/landing/index.php`, `public/css/landing.css`, `public/assets/` |
+| 0002 | Fotos realistas, animações, portal e suporte a túnel | 2026-08-31 | Concluído | `app/views/landing/index.php`, `public/css/landing.css`, `public/assets/landing/`, `app/Repositories/StudentPortalRepository.php`, `app/controllers/PortalController.php`, `app/views/portal/dashboard.php`, `app/Services/RouteAuthorizationService.php`, `app/routes/web.php`, `app/views/auth/login.php`, `public/css/app.css`, `app/bootstrap.php`, `.env` |
+| 0003 | Suporte a PostgreSQL remoto do Supabase | 2026-08-31 | Concluído | `app/config/database.php`, `app/bootstrap.php`, `.env.example` |
+| 0004 | Reformulação visual do painel e portal | 2026-08-31 | Concluído | `app/helpers.php`, `app/views/layouts/main.php`, `app/views/auth/`, `app/views/errors/`, `app/views/dashboard/`, `app/views/portal/`, `app/views/alunos/`, `app/views/modalidades/`, `app/views/turmas/`, `app/views/graduacoes/`, `app/views/professores/`, `app/views/promocoes/`, `app/views/frequencia/`, `app/views/usuarios/`, `app/views/configuracoes/`, `app/views/financeiro/`, `app/views/checkin/`, `app/views/biometria/`, `public/css/app.css` |
+| 0005 | Logo compacta e sidebar responsiva | 2026-08-31 | Concluído | `app/views/layouts/main.php`, `app/views/auth/login.php`, `app/views/errors/error.php`, `app/helpers.php`, `public/css/app.css` |
 
 _Atualizado durante as implementações._

@@ -15,8 +15,5 @@ $path = trim(urldecode($requestPath), '/');
 if (in_array($path, ['index.php', 'login.php'], true)) {
     $path = $path === 'login.php' ? 'login' : '';
 }
-if ($path === '') {
-    redirect('/dashboard');
-}
 
 require dirname(__DIR__) . '/app/routes/web.php';

@@ -13,16 +13,86 @@ use Academia\Core\Csrf;
     <link rel="stylesheet" href="<?php echo e(asset('/css/app.css')); ?>">
 </head>
 <body class="auth-page">
-    <main class="auth-card">
-        <h1><?php echo e(app_config('app_name')); ?></h1>
-        <p class="subtitle">Acesse sua área administrativa ou portal do aluno.</p>
-        <?php if (!empty($error)): ?><div class="alert alert-error" role="alert"><?php echo e($error); ?></div><?php endif; ?>
-        <form method="post" action="<?php echo e(url('/login')); ?>" autocomplete="on">
-            <input type="hidden" name="_csrf" value="<?php echo e(Csrf::token()); ?>">
-            <label for="email">E-mail<input id="email" type="email" name="email" autocomplete="email" required autofocus></label>
-            <label for="senha">Senha<input id="senha" type="password" name="senha" autocomplete="current-password" required></label>
-            <button type="submit" class="btn btn-primary">Entrar</button>
-        </form>
-    </main>
+    <div class="auth-layout">
+        <section class="auth-showcase" aria-label="Garagem Aço">
+            <a class="auth-brand" href="<?php echo e(url('/')); ?>" aria-label="Voltar para o site">
+                <img src="<?php echo e(asset('/assets/logo-garagem-aco.png')); ?>" alt="" width="45" height="45">
+                <span><strong>GARAGEM</strong><b>AÇO</b></span>
+            </a>
+            <div class="auth-showcase-copy">
+                <small>Área exclusiva</small>
+                <h2>Treine.<br><span>Evolua.</span><br>Gerencie.</h2>
+            </div>
+            <div class="auth-showcase-foot">
+                <strong>Disciplina se treina.</strong>
+                <span>Desde 2011 em Santa Felicidade.</span>
+            </div>
+        </section>
+
+        <main class="auth-card">
+            <span class="eyebrow">Acesso seguro</span>
+            <h1>Entrar no painel</h1>
+            <p class="subtitle">Use seu e-mail cadastrado. Alunos entram no portal; a equipe acessa o painel de gestão.</p>
+
+            <?php if (!empty($error)): ?>
+                <div class="alert alert-error" role="alert">
+                    <?php echo icon('alert'); ?>
+                    <span><?php echo e($error); ?></span>
+                </div>
+            <?php endif; ?>
+
+            <form class="auth-form" method="post" action="<?php echo e(url('/login')); ?>" autocomplete="on">
+                <input type="hidden" name="_csrf" value="<?php echo e(Csrf::token()); ?>">
+
+                <div class="auth-field">
+                    <label for="email">E-mail</label>
+                    <div class="input-shell">
+                        <?php echo icon('user-round'); ?>
+                        <input id="email" type="email" name="email" autocomplete="email" placeholder="seu@email.com" required autofocus>
+                    </div>
+                </div>
+
+                <div class="auth-field">
+                    <label for="senha">Senha</label>
+                    <div class="input-shell">
+                        <?php echo icon('settings'); ?>
+                        <input id="senha" type="password" name="senha" autocomplete="current-password" placeholder="Digite sua senha" required>
+                        <button class="password-toggle" type="button" data-password-toggle aria-label="Mostrar senha" aria-pressed="false">
+                            <?php echo icon('eye'); ?>
+                        </button>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary auth-submit" type="submit">
+                    <span>Entrar na conta</span>
+                    <?php echo icon('chevron-right'); ?>
+                </button>
+            </form>
+
+            <div class="auth-meta">
+                <?php echo icon('check-circle'); ?>
+                <span>Ambiente protegido pela Garagem Aço</span>
+            </div>
+            <a class="auth-back" href="<?php echo e(url('/')); ?>">
+                <?php echo icon('arrow-left'); ?>
+                <span>Voltar para o site</span>
+            </a>
+        </main>
+    </div>
+
+    <script>
+        (() => {
+            const toggle = document.querySelector('[data-password-toggle]');
+            const input = document.querySelector('#senha');
+            if (!toggle || !input) return;
+
+            toggle.addEventListener('click', () => {
+                const showing = input.type === 'text';
+                input.type = showing ? 'password' : 'text';
+                toggle.setAttribute('aria-label', showing ? 'Mostrar senha' : 'Ocultar senha');
+                toggle.setAttribute('aria-pressed', String(!showing));
+            });
+        })();
+    </script>
 </body>
 </html>

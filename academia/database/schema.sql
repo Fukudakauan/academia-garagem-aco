@@ -47,6 +47,20 @@ CREATE TABLE modalidades (
 );
 CREATE UNIQUE INDEX modalidades_nome_ativa_uk ON modalidades (LOWER(nome)) WHERE deleted_at IS NULL;
 
+CREATE TABLE modalidade_horarios (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    modalidade_id BIGINT NOT NULL REFERENCES modalidades(id) ON DELETE CASCADE,
+    dia_semana SMALLINT NOT NULL CHECK (dia_semana BETWEEN 1 AND 7),
+    horario_inicio TIME NOT NULL,
+    horario_fim TIME NOT NULL,
+    ativo BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CHECK (horario_fim > horario_inicio)
+);
+CREATE UNIQUE INDEX modalidade_horarios_slot_uk ON modalidade_horarios (modalidade_id, dia_semana, horario_inicio, horario_fim) WHERE ativo = TRUE;
+CREATE INDEX modalidade_horarios_public_idx ON modalidade_horarios (modalidade_id, dia_semana, horario_inicio) WHERE ativo = TRUE;
+
 CREATE TABLE planos (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY, nome VARCHAR(100) NOT NULL,
     valor NUMERIC(12,2) NOT NULL CHECK (valor >= 0), dia_vencimento SMALLINT NOT NULL CHECK (dia_vencimento BETWEEN 1 AND 31),
@@ -78,10 +92,10 @@ CREATE TABLE matriculas (
     aluno_id BIGINT NOT NULL REFERENCES alunos(id) ON DELETE RESTRICT,
     modalidade_id BIGINT NOT NULL REFERENCES modalidades(id) ON DELETE RESTRICT,
     plano_id BIGINT NOT NULL REFERENCES planos(id) ON DELETE RESTRICT,
-    valor_plano NUMERIC(12,2) NOT NULL CHECK (valor_plano >= 0), data_inicio DATE NOT NULL, data_fim DATE,
+    valor_plano NUMERIC(12,2) NOT NULL CHECK (valor_plano >= 0), dia_vencimento SMALLINT NOT NULL DEFAULT 10, data_inicio DATE NOT NULL, data_fim DATE,
     situacao VARCHAR(12) NOT NULL DEFAULT 'ATIVA' CHECK (situacao IN ('ATIVA','SUSPENSA','CANCELADA')),
     created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    CHECK (data_fim IS NULL OR data_fim >= data_inicio)
+    CHECK (data_fim IS NULL OR data_fim >= data_inicio), CONSTRAINT matriculas_dia_vencimento_ck CHECK (dia_vencimento BETWEEN 1 AND 31)
 );
 CREATE UNIQUE INDEX matriculas_aluno_modalidade_aberta_uk ON matriculas (aluno_id, modalidade_id) WHERE situacao IN ('ATIVA','SUSPENSA');
 CREATE INDEX matriculas_aluno_idx ON matriculas (aluno_id);
@@ -97,7 +111,7 @@ CREATE UNIQUE INDEX turma_alunos_ativo_uk ON turma_alunos (turma_id, aluno_id) W
 CREATE TABLE graduacoes (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY, aluno_id BIGINT NOT NULL REFERENCES alunos(id) ON DELETE RESTRICT,
     modalidade_id BIGINT NOT NULL REFERENCES modalidades(id) ON DELETE RESTRICT, faixa VARCHAR(50) NOT NULL,
-    grau INTEGER NOT NULL DEFAULT 0 CHECK (grau >= 0), data_graduacao DATE NOT NULL,
+    grau INTEGER NOT NULL DEFAULT 0 CHECK (grau >= 0), valor NUMERIC(12,2) NOT NULL DEFAULT 0 CHECK (valor >= 0), data_graduacao DATE NOT NULL,
     professor_id BIGINT REFERENCES professores(id) ON DELETE SET NULL, observacoes TEXT, created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 CREATE INDEX graduacoes_aluno_modalidade_idx ON graduacoes (aluno_id, modalidade_id, data_graduacao DESC);
@@ -138,15 +152,20 @@ CREATE UNIQUE INDEX qr_tokens_aluno_ativo_uk ON qr_tokens_aluno (aluno_id) WHERE
 
 CREATE TABLE mensalidades (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY, matricula_id BIGINT NOT NULL REFERENCES matriculas(id) ON DELETE RESTRICT,
+    tipo VARCHAR(20) NOT NULL DEFAULT 'MENSALIDADE' CHECK (tipo IN ('MENSALIDADE','GRADUACAO','AVULSA')),
+    descricao VARCHAR(255), graduacao_id BIGINT REFERENCES graduacoes(id) ON DELETE SET NULL,
     competencia VARCHAR(7) NOT NULL CHECK (competencia ~ '^[0-9]{4}-(0[1-9]|1[0-2])$'),
     valor NUMERIC(12,2) NOT NULL CHECK (valor >= 0), valor_desconto NUMERIC(12,2) NOT NULL DEFAULT 0 CHECK (valor_desconto >= 0),
     valor_final NUMERIC(12,2) NOT NULL CHECK (valor_final >= 0), data_vencimento DATE NOT NULL, data_pagamento DATE,
     status VARCHAR(12) NOT NULL DEFAULT 'ABERTA' CHECK (status IN ('ABERTA','VENCIDA','PAGA','CANCELADA')),
     pix_qr_code TEXT, pix_copia_e_cola TEXT, cancelada_por_usuario_id BIGINT REFERENCES usuarios(id) ON DELETE SET NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE (matricula_id, competencia), CHECK (valor_desconto <= valor), CHECK (status <> 'PAGA' OR data_pagamento IS NOT NULL)
+    CHECK (valor_desconto <= valor), CHECK (status <> 'PAGA' OR data_pagamento IS NOT NULL)
 );
+CREATE UNIQUE INDEX mensalidades_matricula_competencia_mensal_uk ON mensalidades (matricula_id, competencia) WHERE tipo = 'MENSALIDADE';
+CREATE UNIQUE INDEX mensalidades_graduacao_uk ON mensalidades (graduacao_id) WHERE graduacao_id IS NOT NULL;
 CREATE INDEX mensalidades_status_vencimento_idx ON mensalidades (status, data_vencimento);
+CREATE INDEX mensalidades_tipo_idx ON mensalidades (tipo, data_vencimento);
 
 CREATE TABLE pagamentos (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY, mensalidade_id BIGINT NOT NULL REFERENCES mensalidades(id) ON DELETE RESTRICT,

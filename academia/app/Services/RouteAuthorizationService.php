@@ -18,12 +18,17 @@ final class RouteAuthorizationService
             Csrf::verifyRequest();
         }
 
-        if (str_contains($route, '/excluir/') && $method !== 'POST') {
+        if (preg_match('#/(excluir|inativar|ativar)/#', $route) === 1 && $method !== 'POST') {
             throw new HttpException(405, 'Exclusões exigem uma solicitação POST protegida.');
         }
 
         AuthorizationService::requireAuthenticated();
         if ($route === 'logout') {
+            return;
+        }
+
+        if (str_starts_with($route, 'portal')) {
+            AuthorizationService::requireAnyRole([Role::STUDENT]);
             return;
         }
 
