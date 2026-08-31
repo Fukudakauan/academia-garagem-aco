@@ -9,6 +9,7 @@
 
 /storage/*
 !/storage/.gitkeep
+/.local/
 
 /.idea/
 /.vscode/

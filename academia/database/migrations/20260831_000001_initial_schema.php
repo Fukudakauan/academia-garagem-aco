@@ -2,9 +2,7 @@
 
 declare(strict_types=1);
 
-use PDO;
-
-return static function (PDO $pdo): void {
+return static function (\PDO $pdo): void {
     $schema = file_get_contents(__DIR__ . '/../schema.sql');
     if ($schema === false) {
         throw new RuntimeException('Não foi possível ler o schema PostgreSQL.');

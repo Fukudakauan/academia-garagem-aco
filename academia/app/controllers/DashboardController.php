@@ -14,7 +14,7 @@ class DashboardController {
 
         $stats = [
             'alunos_ativos' => (int)$this->pdo->query("SELECT COUNT(*) FROM alunos WHERE situacao = 'ATIVO'")->fetchColumn(),
-            'turmas_ativas' => (int)$this->pdo->query("SELECT COUNT(*) FROM turmas WHERE ativo = 1")->fetchColumn(),
+            'turmas_ativas' => (int)$this->pdo->query("SELECT COUNT(*) FROM turmas WHERE ativo = TRUE")->fetchColumn(),
             'mensalidades_abertas' => (int)$this->pdo->query("SELECT COUNT(*) FROM mensalidades WHERE status = 'ABERTA'")->fetchColumn(),
             'mensalidades_vencidas' => (int)$this->pdo->query("SELECT COUNT(*) FROM mensalidades WHERE status = 'VENCIDA'")->fetchColumn(),
         ];
