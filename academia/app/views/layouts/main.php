@@ -28,6 +28,7 @@ $adminRoles = ['SUPER_ADMIN', 'ADMIN'];
                 <a href="<?php echo e(url('/graduacoes')); ?>">Graduações</a>
                 <a href="<?php echo e(url('/professores')); ?>">Professores</a>
                 <a href="<?php echo e(url('/frequencia')); ?>">Frequência</a>
+                <a href="<?php echo e(url('/checkin')); ?>">Check-in</a>
                 <a href="<?php echo e(url('/biometria')); ?>">Biometria</a>
                 <?php if (in_array($role, $financeRoles, true)): ?><a href="<?php echo e(url('/financeiro')); ?>">Financeiro</a><?php endif; ?>
                 <?php if (in_array($role, $adminRoles, true)): ?>

@@ -133,6 +133,8 @@ textarea { min-height: 80px; resize: vertical; }
   border-radius: 12px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
+.access-allowed { border-left: 6px solid var(--success); }
+.access-blocked { border-left: 6px solid var(--danger); }
 .hint { color: var(--muted); font-size: 13px; }
 
 .table {

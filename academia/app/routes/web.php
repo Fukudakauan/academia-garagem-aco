@@ -132,6 +132,12 @@ if ($route === 'biometria') {
     exit;
 }
 
+if ($route === 'checkin') {
+    require __DIR__ . '/../controllers/CheckinController.php';
+    (new CheckinController($pdo))->index();
+    exit;
+}
+
 if ($route === 'financeiro') {
     require __DIR__ . '/../controllers/FinanceiroController.php';
     (new FinanceiroController($pdo))->index();

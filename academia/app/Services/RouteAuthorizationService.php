@@ -44,6 +44,9 @@ final class RouteAuthorizationService
         if (str_starts_with($route, 'biometria')) {
             return [Role::SUPER_ADMIN, Role::ADMIN, Role::RECEPTION];
         }
+        if (str_starts_with($route, 'checkin')) {
+            return [Role::SUPER_ADMIN, Role::ADMIN, Role::RECEPTION];
+        }
         if (str_starts_with($route, 'frequencia') || str_starts_with($route, 'graduacoes')) {
             return [Role::SUPER_ADMIN, Role::ADMIN, Role::INSTRUCTOR, Role::RECEPTION];
         }
