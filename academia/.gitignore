@@ -1,0 +1,16 @@
+.env
+.env.*
+!.env.example
+
+/vendor/
+/bin/composer.phar
+/.phpunit.cache/
+/coverage/
+
+/storage/*
+!/storage/.gitkeep
+
+/.idea/
+/.vscode/
+*.log
+*.zip
