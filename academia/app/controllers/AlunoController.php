@@ -75,7 +75,7 @@ class AlunoController {
     public function delete(int $id): void {
         AuthMiddleware::requireAuth();
         $alunoModel = new Aluno($this->pdo);
-        $alunoModel->delete($id);
+        $alunoModel->update($id, ['situacao' => 'CANCELADO', 'ativo' => false]);
         header('Location: /academia/public/alunos');
         exit;
     }

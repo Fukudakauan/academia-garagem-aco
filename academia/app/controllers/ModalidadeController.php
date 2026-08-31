@@ -44,7 +44,7 @@ class ModalidadeController {
 
     public function delete(int $id): void {
         AuthMiddleware::requireAuth();
-        (new Modalidade($this->pdo))->delete($id);
+        (new Modalidade($this->pdo))->update($id, ['ativo' => false]);
         header('Location: /academia/public/modalidades');
         exit;
     }

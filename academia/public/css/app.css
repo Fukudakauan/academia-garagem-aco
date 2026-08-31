@@ -151,6 +151,9 @@ textarea { min-height: 80px; resize: vertical; }
 .table th { background: #f9fafb; }
 .table a { color: var(--primary); text-decoration: none; margin-right: 8px; }
 .table a.danger { color: var(--danger); }
+.inline-form { display: inline; }
+.link-button { background: transparent; border: 0; color: var(--primary); cursor: pointer; font: inherit; padding: 0; }
+.link-button.danger { color: var(--danger); }
 
 .form-actions {
   margin-top: 8px;

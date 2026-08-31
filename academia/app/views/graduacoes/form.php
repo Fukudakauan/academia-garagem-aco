@@ -8,6 +8,7 @@ ob_start();
 </div>
 
 <form method="POST">
+    <input type="hidden" name="_csrf" value="<?php echo e(\Academia\Core\Csrf::token()); ?>">
     <label>Aluno
         <select name="aluno_id" required>
             <option value="">Selecione</option>

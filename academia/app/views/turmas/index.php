@@ -29,7 +29,10 @@ ob_start();
                 <td><?php echo htmlspecialchars($t['horario_inicio'] ?? ''); ?> - <?php echo htmlspecialchars($t['horario_fim'] ?? ''); ?></td>
                 <td>
                     <a href="/academia/public/turmas/editar/<?php echo (int)$t['id']; ?>">Editar</a>
-                    <a href="/academia/public/turmas/excluir/<?php echo (int)$t['id']; ?>" onclick="return confirm('Excluir turma?')">Excluir</a>
+                    <form method="post" action="<?php echo e(url('/turmas/excluir/' . (int) $t['id'])); ?>" class="inline-form" onsubmit="return confirm('Desativar turma?')">
+                        <input type="hidden" name="_csrf" value="<?php echo e(\Academia\Core\Csrf::token()); ?>">
+                        <button type="submit" class="link-button danger">Desativar</button>
+                    </form>
                 </td>
             </tr>
         <?php endforeach; ?>

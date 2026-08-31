@@ -27,7 +27,10 @@ ob_start();
                 <td><?php echo htmlspecialchars($aluno['situacao'] ?? 'ATIVO'); ?></td>
                 <td>
                     <a href="/academia/public/alunos/editar/<?php echo (int)$aluno['id']; ?>">Editar</a>
-                    <a href="/academia/public/alunos/excluir/<?php echo (int)$aluno['id']; ?>" onclick="return confirm('Excluir aluno?')">Excluir</a>
+                    <form method="post" action="<?php echo e(url('/alunos/excluir/' . (int) $aluno['id'])); ?>" class="inline-form" onsubmit="return confirm('Desativar este aluno?')">
+                        <input type="hidden" name="_csrf" value="<?php echo e(\Academia\Core\Csrf::token()); ?>">
+                        <button type="submit" class="link-button danger">Desativar</button>
+                    </form>
                 </td>
             </tr>
         <?php endforeach; ?>

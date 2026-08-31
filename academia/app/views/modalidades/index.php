@@ -19,7 +19,10 @@ ob_start();
                 <td><?php echo htmlspecialchars($item['descricao'] ?? ''); ?></td>
                 <td>
                     <a href="/academia/public/modalidades/editar/<?php echo (int)$item['id']; ?>">Editar</a>
-                    <a href="/academia/public/modalidades/excluir/<?php echo (int)$item['id']; ?>" onclick="return confirm('Excluir modalidade?')">Excluir</a>
+                    <form method="post" action="<?php echo e(url('/modalidades/excluir/' . (int) $item['id'])); ?>" class="inline-form" onsubmit="return confirm('Desativar modalidade?')">
+                        <input type="hidden" name="_csrf" value="<?php echo e(\Academia\Core\Csrf::token()); ?>">
+                        <button type="submit" class="link-button danger">Desativar</button>
+                    </form>
                 </td>
             </tr>
         <?php endforeach; ?>

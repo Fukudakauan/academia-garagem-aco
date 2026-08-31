@@ -53,7 +53,7 @@ class ProfessorController {
 
     public function delete(int $id): void {
         AuthMiddleware::requireAuth();
-        (new Professor($this->pdo))->delete($id);
+        (new Professor($this->pdo))->update($id, ['ativo' => false]);
         header('Location: /academia/public/professores');
         exit;
     }

@@ -56,7 +56,7 @@ class PromocaoController {
 
     public function delete(int $id): void {
         AuthMiddleware::requireAuth();
-        (new Promocao($this->pdo))->delete($id);
+        (new Promocao($this->pdo))->update($id, ['ativo' => false]);
         header('Location: /academia/public/promocoes');
         exit;
     }

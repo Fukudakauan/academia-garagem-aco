@@ -21,7 +21,10 @@ ob_start();
                 <td><?php echo (int)$p['meses_inicio']; ?> - <?php echo $p['meses_fim'] ?? '+'; ?></td>
                 <td>
                     <a href="/academia/public/promocoes/editar/<?php echo (int)$p['id']; ?>">Editar</a>
-                    <a href="/academia/public/promocoes/excluir/<?php echo (int)$p['id']; ?>" onclick="return confirm('Excluir promoção?')">Excluir</a>
+                    <form method="post" action="<?php echo e(url('/promocoes/excluir/' . (int) $p['id'])); ?>" class="inline-form" onsubmit="return confirm('Desativar promoção?')">
+                        <input type="hidden" name="_csrf" value="<?php echo e(\Academia\Core\Csrf::token()); ?>">
+                        <button type="submit" class="link-button danger">Desativar</button>
+                    </form>
                 </td>
             </tr>
         <?php endforeach; ?>

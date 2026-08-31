@@ -68,7 +68,7 @@ class TurmaController {
 
     public function delete(int $id): void {
         AuthMiddleware::requireAuth();
-        (new Turma($this->pdo))->delete($id);
+        (new Turma($this->pdo))->update($id, ['ativo' => false]);
         header('Location: /academia/public/turmas');
         exit;
     }

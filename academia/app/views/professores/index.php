@@ -21,7 +21,10 @@ ob_start();
                 <td><?php echo htmlspecialchars($p['cref'] ?? ''); ?></td>
                 <td>
                     <a href="/academia/public/professores/editar/<?php echo (int)$p['id']; ?>">Editar</a>
-                    <a href="/academia/public/professores/excluir/<?php echo (int)$p['id']; ?>" onclick="return confirm('Excluir professor?')">Excluir</a>
+                    <form method="post" action="<?php echo e(url('/professores/excluir/' . (int) $p['id'])); ?>" class="inline-form" onsubmit="return confirm('Desativar professor?')">
+                        <input type="hidden" name="_csrf" value="<?php echo e(\Academia\Core\Csrf::token()); ?>">
+                        <button type="submit" class="link-button danger">Desativar</button>
+                    </form>
                 </td>
             </tr>
         <?php endforeach; ?>

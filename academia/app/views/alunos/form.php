@@ -9,6 +9,7 @@ ob_start();
 </div>
 
 <form method="POST" autocomplete="off">
+    <input type="hidden" name="_csrf" value="<?php echo e(\Academia\Core\Csrf::token()); ?>">
     <label>Nome *
         <input type="text" name="nome" value="<?php echo htmlspecialchars($aluno['nome'] ?? ''); ?>" required>
     </label>

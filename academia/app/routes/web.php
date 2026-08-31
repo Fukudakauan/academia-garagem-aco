@@ -8,6 +8,10 @@ if (empty($pdo)) {
 
 $route = $path ?? '';
 
+if ($route !== 'login') {
+    \Academia\Services\RouteAuthorizationService::enforce($route);
+}
+
 if (str_starts_with($route, 'login') || $route === 'login') {
     require __DIR__ . '/../controllers/AuthController.php';
     (new AuthController($pdo))->login();

@@ -9,6 +9,7 @@ ob_start();
 </div>
 
 <form method="POST">
+    <input type="hidden" name="_csrf" value="<?php echo e(\Academia\Core\Csrf::token()); ?>">
     <label>Nome *
         <input type="text" name="nome" value="<?php echo htmlspecialchars($item['nome'] ?? ''); ?>" required>
     </label>
