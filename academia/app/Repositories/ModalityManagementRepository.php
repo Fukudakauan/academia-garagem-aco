@@ -29,7 +29,7 @@ final class ModalityManagementRepository implements ModalityManagementRepository
 
         $schedules = $this->pdo->query(
             "SELECT id, modalidade_id, dia_semana, TO_CHAR(horario_inicio, 'HH24:MI') AS horario_inicio,
-                    TO_CHAR(horario_fim, 'HH24:MI') AS horario_fim, ativo
+                    TO_CHAR(horario_fim, 'HH24:MI') AS horario_fim, ativo, observacao
              FROM modalidade_horarios
              WHERE ativo = TRUE
              ORDER BY modalidade_id, dia_semana, horario_inicio"
@@ -55,7 +55,7 @@ final class ModalityManagementRepository implements ModalityManagementRepository
 
         $scheduleStatement = $this->pdo->prepare(
             "SELECT id, modalidade_id, dia_semana, TO_CHAR(horario_inicio, 'HH24:MI') AS horario_inicio,
-                    TO_CHAR(horario_fim, 'HH24:MI') AS horario_fim, ativo
+                    TO_CHAR(horario_fim, 'HH24:MI') AS horario_fim, ativo, observacao
              FROM modalidade_horarios
              WHERE modalidade_id = :modality_id AND ativo = TRUE
              ORDER BY dia_semana, horario_inicio"
@@ -149,7 +149,7 @@ final class ModalityManagementRepository implements ModalityManagementRepository
         $schedules = $this->pdo->query(
             "SELECT mh.modalidade_id, mh.dia_semana,
                     TO_CHAR(mh.horario_inicio, 'HH24:MI') AS horario_inicio,
-                    TO_CHAR(mh.horario_fim, 'HH24:MI') AS horario_fim
+                    TO_CHAR(mh.horario_fim, 'HH24:MI') AS horario_fim, mh.observacao
              FROM modalidade_horarios mh
              INNER JOIN modalidades m ON m.id = mh.modalidade_id
              WHERE mh.ativo = TRUE AND m.ativo = TRUE AND m.deleted_at IS NULL
@@ -167,11 +167,11 @@ final class ModalityManagementRepository implements ModalityManagementRepository
         }
 
         $statement = $this->pdo->prepare(
-            'INSERT INTO modalidade_horarios (modalidade_id, dia_semana, horario_inicio, horario_fim, ativo)
-             VALUES (:modalidade_id, :dia_semana, :horario_inicio, :horario_fim, :ativo)'
+            'INSERT INTO modalidade_horarios (modalidade_id, dia_semana, horario_inicio, horario_fim, ativo, observacao)
+             VALUES (:modalidade_id, :dia_semana, :horario_inicio, :horario_fim, :ativo, :observacao)'
         );
         foreach ($schedules as $schedule) {
-            $statement->execute($schedule + ['modalidade_id' => $modalityId]);
+            $statement->execute($schedule + ['modalidade_id' => $modalityId, 'observacao' => null]);
         }
     }
 

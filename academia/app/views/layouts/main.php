@@ -7,13 +7,13 @@ $user = $_SESSION['auth'] ?? [];
 $role = (string) ($user['role'] ?? '');
 $financeRoles = ['SUPER_ADMIN', 'ADMIN', 'FINANCE'];
 $adminRoles = ['SUPER_ADMIN', 'ADMIN'];
-$currentRoute = trim((string) ($path ?? ''), '/');
+$currentRoute = trim((string) ($path ?? $GLOBALS['path'] ?? ''), '/');
 
 $navGroups = [
     [
         'label' => 'Visão geral',
         'items' => [
-            ['route' => 'dashboard', 'label' => 'Dashboard', 'icon' => 'dashboard'],
+            ['route' => 'dashboard', 'label' => 'Visão geral', 'icon' => 'dashboard'],
         ],
     ],
     [
@@ -31,7 +31,7 @@ $navGroups = [
         'items' => [
             ['route' => 'frequencia', 'label' => 'Frequência', 'icon' => 'clipboard'],
             ['route' => 'checkin', 'label' => 'Check-in', 'icon' => 'qr'],
-            ['route' => 'biometria', 'label' => 'Biometria', 'icon' => 'fingerprint'],
+            ['route' => 'biometria', 'label' => 'Cadastro facial', 'icon' => 'fingerprint'],
         ],
     ],
 ];
@@ -51,12 +51,24 @@ if (in_array($role, $adminRoles, true)) {
         'items' => [
             ['route' => 'promocoes', 'label' => 'Promoções', 'icon' => 'tag'],
             ['route' => 'usuarios', 'label' => 'Usuários', 'icon' => 'users'],
+            ['route' => 'whatsapp', 'label' => 'WhatsApp e cobranças', 'icon' => 'wallet'],
             ['route' => 'configuracoes', 'label' => 'Configurações', 'icon' => 'settings'],
         ],
     ];
 }
 
-$currentTitle = 'Dashboard';
+$accessRoles = ['SUPER_ADMIN', 'ADMIN', 'RECEPTION'];
+foreach ($navGroups as &$group) {
+    $group['items'] = array_values(array_filter($group['items'], static function (array $item) use ($role, $accessRoles): bool {
+        return match ($item['route']) {
+            'alunos', 'turmas', 'checkin', 'biometria' => in_array($role, $accessRoles, true),
+            'frequencia', 'graduacoes' => in_array($role, [...$accessRoles, 'INSTRUCTOR'], true),
+            default => true,
+        };
+    }));
+}
+unset($group);
+$currentTitle = 'Visão geral';
 foreach ($navGroups as $group) {
     foreach ($group['items'] as $item) {
         if ($currentRoute === $item['route'] || str_starts_with($currentRoute, $item['route'] . '/')) {
@@ -66,32 +78,39 @@ foreach ($navGroups as $group) {
 }
 
 $userName = (string) ($user['name'] ?? 'Usuário');
-$userInitial = strtoupper(substr($userName, 0, 1));
+$userInitial = mb_strtoupper(mb_substr($userName, 0, 1));
+$roleNames = ['SUPER_ADMIN' => 'Administrador', 'ADMIN' => 'Administrador', 'RECEPTION' => 'Recepção', 'FINANCE' => 'Financeiro', 'INSTRUCTOR' => 'Professor'];
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#090a0c">
     <title><?php echo isset($title) ? e($title) . ' — ' : ''; ?><?php echo e($appName); ?></title>
+    <link rel="icon" href="<?= e(asset('/assets/logo-garagem-aco.png')) ?>">
+    <link rel="stylesheet" href="<?= e(asset('/css/fonts.css')) ?>">
+    <link rel="stylesheet" href="<?= e(asset('/css/tokens.css')) ?>">
     <link rel="stylesheet" href="<?php echo e(asset('/css/app.css')); ?>">
 </head>
 <body class="app-body">
+    <a class="skip-link" href="#main-content">Pular para o conteúdo</a>
     <div class="app-shell" data-app-shell>
         <button class="sidebar-backdrop" type="button" data-sidebar-close aria-label="Fechar menu"></button>
 
-        <aside class="sidebar" data-sidebar aria-label="Navegação principal">
+        <aside class="sidebar" id="main-navigation" data-sidebar aria-label="Navegação principal">
             <div>
                 <div class="sidebar-brand-row">
                     <a class="sidebar-brand" href="<?php echo e(url('/dashboard')); ?>" aria-label="<?php echo e($appName); ?> — dashboard">
-                        <span class="sidebar-brand-mark"><img src="<?php echo e(asset('/assets/logo-garagem-aco.png')); ?>" alt="" width="29" height="29"></span>
+                        <span class="sidebar-brand-mark"><img src="<?php echo e(asset('/assets/logo-garagem-aco.png')); ?>" alt="" width="54" height="54"></span>
+                        <span class="brand-name" translate="no">GARAGEM<strong>AÇO</strong></span>
                     </a>
                     <button class="sidebar-close icon-button" type="button" data-sidebar-close aria-label="Fechar menu">
                         <?php echo icon('close'); ?>
                     </button>
                 </div>
 
-                <div class="sidebar-kicker">Painel de gestão</div>
+                <div class="sidebar-kicker">Centro de treinamento</div>
 
                 <nav class="sidebar-nav">
                     <?php foreach ($navGroups as $group): ?>
@@ -112,7 +131,7 @@ $userInitial = strtoupper(substr($userName, 0, 1));
             <div class="sidebar-footer">
                 <div class="sidebar-user">
                     <span class="avatar" aria-hidden="true"><?php echo e($userInitial); ?></span>
-                    <span class="sidebar-user-copy"><strong><?php echo e($userName); ?></strong><small><?php echo e(str_replace('_', ' ', $role)); ?></small></span>
+                    <span class="sidebar-user-copy"><strong><?php echo e($userName); ?></strong><small><?php echo e($roleNames[$role] ?? $role); ?></small></span>
                 </div>
                 <form method="post" action="<?php echo e(url('/logout')); ?>">
                     <input type="hidden" name="_csrf" value="<?php echo e(\Academia\Core\Csrf::token()); ?>">
@@ -127,40 +146,28 @@ $userInitial = strtoupper(substr($userName, 0, 1));
         <main class="content">
             <header class="topbar">
                 <div class="topbar-leading">
-                    <button class="menu-trigger icon-button" type="button" data-sidebar-open aria-label="Abrir menu">
+                    <button class="menu-trigger icon-button" type="button" data-sidebar-open aria-label="Abrir menu" aria-expanded="false" aria-controls="main-navigation">
                         <?php echo icon('menu'); ?>
                     </button>
                     <div>
-                        <p class="topbar-kicker">Garagem Aço <span>/</span> Área restrita</p>
-                        <h1 class="topbar-title"><?php echo e($currentTitle); ?></h1>
+                        <p class="topbar-kicker">Gestão da academia <span>/</span></p>
+                        <span class="topbar-title"><?php echo e($currentTitle); ?></span>
                     </div>
                 </div>
-                <div class="topbar-user">
-                    <span class="status-dot"></span>
-                    <span>Operação online</span>
+                <div class="topbar-actions">
+                    <time class="topbar-date" datetime="<?= date('Y-m-d') ?>"><?= date('d.m.Y') ?></time>
+                    <?php if (in_array($role, $accessRoles, true) && $currentRoute !== 'checkin'): ?>
+                    <a class="btn btn-secondary" href="<?= e(url('/checkin')) ?>"><?= icon('qr') ?><span>Abrir check-in</span></a>
+                    <?php endif ?>
                 </div>
             </header>
 
-            <div class="content-inner">
+            <div class="content-inner" id="main-content" tabindex="-1">
                 <?php echo $content ?? ''; ?>
             </div>
         </main>
     </div>
 
-    <script>
-        (() => {
-            const shell = document.querySelector('[data-app-shell]');
-            if (!shell) return;
-
-            const openButton = shell.querySelector('[data-sidebar-open]');
-            const closeButtons = shell.querySelectorAll('[data-sidebar-close]');
-            const navLinks = shell.querySelectorAll('.nav-link');
-
-            const closeMenu = () => shell.classList.remove('sidebar-is-open');
-            openButton?.addEventListener('click', () => shell.classList.add('sidebar-is-open'));
-            closeButtons.forEach((button) => button.addEventListener('click', closeMenu));
-            navLinks.forEach((link) => link.addEventListener('click', closeMenu));
-        })();
-    </script>
+    <script defer src="<?= e(asset('/js/interface.js')) ?>"></script>
 </body>
 </html>

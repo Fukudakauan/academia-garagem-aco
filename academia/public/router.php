@@ -12,6 +12,7 @@ if (PHP_SAPI === 'cli-server' && is_file($file)) {
     $mimeTypes = [
         'css' => 'text/css; charset=UTF-8',
         'js' => 'text/javascript; charset=UTF-8',
+        'mjs' => 'text/javascript; charset=UTF-8',
         'png' => 'image/png',
         'jpg' => 'image/jpeg',
         'jpeg' => 'image/jpeg',

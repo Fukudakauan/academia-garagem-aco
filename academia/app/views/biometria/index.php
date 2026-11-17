@@ -1,39 +1,43 @@
-<?php
-
-declare(strict_types=1);
-
-$content = ob_get_clean();
-ob_start();
-?>
+<?php declare(strict_types=1);
+ob_start(); ?>
 <div class="page-header">
-    <div>
-        <span class="eyebrow">Controle de acesso</span>
-        <h1>Biometria</h1>
-        <p>Prepare a integração dos equipamentos de entrada.</p>
-    </div>
+    <div><span class="eyebrow">Celular da recepção</span>
+        <h1>Cadastro facial</h1>
+        <p>Cadastre o rosto no mesmo celular usado para registrar as entradas.</p>
+    </div><a class="btn btn-secondary" href="<?= e(url('/checkin')) ?>">Abrir check-in</a>
 </div>
-
-<section class="panel" aria-labelledby="biometric-title">
-    <div class="panel-heading">
-        <div>
-            <h2 id="biometric-title">Integração pendente</h2>
-            <p>A tela ficará pronta para o SDK ou API do fabricante escolhido.</p>
-        </div>
-        <?php echo icon('fingerprint'); ?>
-    </div>
-    <div class="empty-state">
-        <?php echo icon('fingerprint'); ?>
-        <div>
-            <strong>Nenhum equipamento conectado</strong>
-            <p>A definição do fornecedor libera o cadastro e os eventos de entrada.</p>
-        </div>
-    </div>
-    <div class="quick-links">
-        <div class="quick-link"><span class="badge">01</span><span>Equipamentos cadastrados</span></div>
-        <div class="quick-link"><span class="badge">02</span><span>Log de entradas</span></div>
-        <div class="quick-link"><span class="badge">03</span><span>Bloqueio automático</span></div>
-    </div>
-</section>
-<?php
-$content = ob_get_clean();
-include __DIR__ . '/../layouts/main.php';
+<div class="checkin-layout">
+    <section class="panel" data-facial data-mode="enroll" data-models="<?= e(asset('/vendor/face-api/models')) ?>"
+        data-checkin="<?= e(url('/checkin')) ?>" data-csrf="<?= e(\Academia\Core\Csrf::token()) ?>"
+        data-scope="<?= e(url('/')) ?>">
+        <label for="face-student">Aluno<select id="face-student" data-face-student>
+                <option value="">Selecione o aluno</option><?php foreach ($students as $student): ?><option
+                    value="<?= e($student['id']) ?>"><?= e($student['nome']) ?> · <?= e($student['matricula_codigo']) ?>
+                </option><?php endforeach ?>
+            </select></label>
+        <p>Os dados faciais ficam apenas neste navegador. Nenhuma foto é salva. Ao limpar os dados do site ou trocar de
+            celular, cadastre novamente.</p>
+        <label class="consent-label"><input type="checkbox" data-face-consent> O aluno ou responsável autorizou o
+            cadastro facial e foi informado da alternativa por matrícula.</label>
+        <div class="camera-frame"><video data-face-video autoplay muted playsinline
+                aria-label="Câmera para cadastro facial"></video></div>
+        <p data-face-status role="status" aria-live="polite">Selecione o aluno e abra a câmera.</p>
+        <div class="form-actions"><button class="btn btn-primary" type="button" data-face-start>Abrir
+                câmera</button><button class="btn btn-primary" type="button" data-face-enroll disabled>Capturar e
+                cadastrar</button><button class="btn btn-secondary" type="button" data-face-stop disabled>Desligar
+                câmera</button><button class="btn btn-secondary" type="button" data-face-delete>Excluir facial do
+                aluno</button></div>
+        <p class="hint" data-face-count></p>
+    </section>
+    <section class="panel"><span class="eyebrow">Antes do primeiro treino</span>
+        <h2>O rosto fica neste celular.</h2>
+        <p>Selecione o aluno, confirme a autorização e capture três amostras com boa iluminação.</p>
+        <h2>Uso na recepção</h2>
+        <p>Use este celular sob supervisão da equipe. O reconhecimento por câmera não possui prova de vida certificada e
+            pode ser enganado por fotografias. Não use como fechadura ou liberação física automática.</p>
+    </section>
+</div>
+<script defer src="<?= e(asset('/vendor/face-api/face-api.min.js')) ?>"></script>
+<script type="module" src="<?= e(asset('/js/facial.js')) ?>"></script>
+<?php $content = ob_get_clean();
+include __DIR__ . '/../layouts/main.php'; ?>

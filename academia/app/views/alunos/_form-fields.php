@@ -18,8 +18,8 @@ $portalPassword = (string) ($portalPassword ?? '');
         <input type="email" name="email" value="<?php echo e($studentData['email'] ?? ''); ?>"<?php echo $isEdit ? '' : ' required'; ?> placeholder="aluno@email.com" autocomplete="email">
         <span class="form-help">O aluno usa este e-mail para entrar no portal.</span>
     </label>
-    <label>Telefone
-        <input type="text" name="telefone" value="<?php echo e($studentData['telefone'] ?? ''); ?>" placeholder="(41) 99999-0000">
+    <label>Telefone / WhatsApp
+        <input type="tel" inputmode="tel" autocomplete="tel" name="telefone" value="<?php echo e($studentData['telefone'] ?? ''); ?>" placeholder="(41) 99999-0000">
     </label>
     <label>Data de nascimento
         <input type="date" name="data_nascimento" value="<?php echo e($studentData['data_nascimento'] ?? ''); ?>">
@@ -38,6 +38,7 @@ $portalPassword = (string) ($portalPassword ?? '');
     <?php if ($isEdit && !empty($studentData['usuario_id'])): ?>
         <div class="field-full form-help form-help--success">Acesso do portal ativo para este aluno.</div>
     <?php endif; ?>
+    <div class="field-full"><input type="hidden" name="whatsapp_cobranca" value="0"><label class="consent-label"><input type="checkbox" name="whatsapp_cobranca" value="1" <?= !empty($studentData['whatsapp_cobranca']) ? 'checked' : '' ?>> Enviar lembrete mensal de pagamento pelo WhatsApp deste aluno</label><p class="form-help">Use um telefone com DDD. O lembrete segue o dia de vencimento definido abaixo e só é enviado após ativar a automação em WhatsApp e cobranças.</p></div>
 </div>
 
 <div class="student-enrollments" data-enrollment-editor>
@@ -67,7 +68,7 @@ $portalPassword = (string) ($portalPassword ?? '');
                         <select name="matriculas[<?php echo (int) $index; ?>][modalidade_id]" data-enrollment-modality>
                             <option value="">Selecione uma modalidade</option>
                             <?php foreach ($modalidades as $modalidade): ?>
-                                <option value="<?php echo (int) $modalidade['id']; ?>" <?php echo ((int) ($enrollment['modalidade_id'] ?? 0) === (int) $modalidade['id'] ? 'selected' : ''); ?>><?php echo e($modalidade['nome']); ?></option>
+                                <option value="<?php echo (int) $modalidade['id']; ?>" <?php echo((int) ($enrollment['modalidade_id'] ?? 0) === (int) $modalidade['id'] ? 'selected' : ''); ?>><?php echo e($modalidade['nome']); ?></option>
                             <?php endforeach; ?>
                         </select>
                     </label>

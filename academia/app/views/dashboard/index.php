@@ -21,6 +21,13 @@ $formatDate = static function (mixed $date): string {
     </div>
 </div>
 
+<?php if (in_array($_SESSION['auth']['role'] ?? '', ['SUPER_ADMIN', 'ADMIN', 'RECEPTION'], true)): ?>
+<section class="dashboard-hero" aria-labelledby="reception-title">
+    <div><span class="eyebrow">Recepção pronta</span><h2 id="reception-title">O próximo treino começa na entrada.</h2><p>Consulte a situação do aluno e registre a presença em um só lugar.</p></div>
+    <a class="btn btn-primary" href="<?= e(url('/checkin')) ?>"><?= icon('qr') ?> Registrar presença</a>
+</section>
+<?php endif ?>
+
 <div class="cards-grid" aria-label="Resumo da academia">
     <article class="card">
         <span class="card-icon"><?php echo icon('users'); ?></span>
@@ -30,7 +37,7 @@ $formatDate = static function (mixed $date): string {
     </article>
     <article class="card">
         <span class="card-icon"><?php echo icon('calendar'); ?></span>
-        <div class="card-title">Aulas particulares ativas</div>
+        <div class="card-title">Aulas particulares</div>
         <div class="card-number"><?php echo (int) ($stats['turmas_ativas'] ?? 0); ?></div>
         <div class="card-meta"><span>Atendimentos individuais</span></div>
     </article>

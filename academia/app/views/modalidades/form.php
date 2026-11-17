@@ -80,8 +80,11 @@ ob_start();
                         <label>Início
                             <input type="time" name="horarios[<?php echo (int) $index; ?>][horario_inicio]" value="<?php echo e($horario['horario_inicio'] ?? ''); ?>" required>
                         </label>
-                        <label>Fim
-                            <input type="time" name="horarios[<?php echo (int) $index; ?>][horario_fim]" value="<?php echo e($horario['horario_fim'] ?? ''); ?>" required>
+                        <label>Fim (opcional)
+                            <input type="time" name="horarios[<?php echo (int) $index; ?>][horario_fim]" value="<?php echo e($horario['horario_fim'] ?? ''); ?>">
+                        </label>
+                        <label class="field-full">Observação da aula (opcional)
+                            <input name="horarios[<?php echo (int) $index; ?>][observacao]" maxlength="150" value="<?= e($horario['observacao'] ?? '') ?>" placeholder="Ex.: fundamentos de Boxe…">
                         </label>
                     </div>
                 </div>
@@ -122,8 +125,11 @@ ob_start();
             <label>Início
                 <input type="time" name="horarios[__INDEX__][horario_inicio]" required>
             </label>
-            <label>Fim
-                <input type="time" name="horarios[__INDEX__][horario_fim]" required>
+            <label>Fim (opcional)
+                <input type="time" name="horarios[__INDEX__][horario_fim]">
+            </label>
+            <label class="field-full">Observação da aula (opcional)
+                <input name="horarios[__INDEX__][observacao]" maxlength="150" placeholder="Ex.: fundamentos de Boxe…">
             </label>
         </div>
     </div>

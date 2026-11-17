@@ -58,6 +58,8 @@ function icon(string $name, string $class = 'icon'): string
         'trash' => '<path d="M4 7h16M10 11v6M14 11v6M6 7l1 14h10l1-14M9 7V4h6v3"/>',
         'save' => '<path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/><path d="M17 21v-8H7v8M7 3v5h8"/>',
         'arrow-left' => '<path d="m12 19-7-7 7-7M5 12h14"/>',
+        'arrow-right' => '<path d="m12 5 7 7-7 7M5 12h14"/>',
+        'arrow-down' => '<path d="m5 12 7 7 7-7M12 5v14"/>',
         'external' => '<path d="M14 3h7v7M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>',
         'check' => '<path d="m5 12 4 4L19 6"/>',
         'check-circle' => '<circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16 9"/>',

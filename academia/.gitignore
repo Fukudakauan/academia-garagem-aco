@@ -15,3 +15,5 @@
 /.vscode/
 *.log
 *.zip
+
+/integrations/whatsapp/node_modules/

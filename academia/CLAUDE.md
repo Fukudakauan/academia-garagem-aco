@@ -86,7 +86,7 @@ Dependências permitidas: Controller → Service → Repository. Core pode ser u
 ## Restrições e Cuidados
 
 - Não implementar APK, Android nativo ou Kotlin.
-- Não armazenar templates ou imagens biométricas.
+- Não armazenar imagens ou templates biométricos no servidor. A pedido do usuário, o modo facial web guarda descritores apenas no IndexedDB do celular, mediante autorização e com exclusão disponível. Não usar como controle físico sem prova de vida.
 - Não inserir senha padrão, token ou credencial no Git.
 - Não integrar PIX ou biometria de fornecedor sem contrato, credenciais e validação do protocolo.
 

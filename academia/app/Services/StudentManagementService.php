@@ -41,6 +41,10 @@ final class StudentManagementService
             'ativo' => true,
         ];
 
+        if (array_key_exists('whatsapp_cobranca', $input)) {
+            $student['whatsapp_cobranca'] = filter_var($input['whatsapp_cobranca'], FILTER_VALIDATE_BOOL) ? 1 : 0;
+        }
+
         $enrollments = $this->normalizeEnrollments($input['matriculas'] ?? []);
         $portalAccess = $this->portalAccess($input);
         if ($portalAccess === null) {
@@ -69,6 +73,10 @@ final class StudentManagementService
             'matricula_codigo' => $registrationCode,
             'data_matricula' => trim((string) ($input['data_matricula'] ?? date('Y-m-d'))),
         ];
+
+        if (array_key_exists('whatsapp_cobranca', $input)) {
+            $student['whatsapp_cobranca'] = filter_var($input['whatsapp_cobranca'], FILTER_VALIDATE_BOOL) ? 1 : 0;
+        }
 
         $enrollments = $this->normalizeEnrollments($input['matriculas'] ?? []);
         $portalAccess = $this->portalAccess($input);
@@ -102,6 +110,9 @@ final class StudentManagementService
             throw new InvalidArgumentException('Informe o nome do aluno.');
         }
 
+        if (filter_var($input['whatsapp_cobranca'] ?? false, FILTER_VALIDATE_BOOL)) {
+            \Academia\Support\PhoneNumber::brazil((string) ($input['telefone'] ?? ''));
+        }
         $email = trim((string) ($input['email'] ?? ''));
         if ($email !== '' && filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
             throw new InvalidArgumentException('Informe um e-mail válido.');

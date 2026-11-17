@@ -20,7 +20,7 @@ final class StudentManagementRepository implements StudentManagementRepositoryIn
     {
         $students = $this->pdo->query(
             'SELECT id, usuario_id, nome, cpf, email, telefone, data_nascimento, matricula_codigo,
-                    data_matricula, situacao, ativo
+                    data_matricula, situacao, ativo, whatsapp_cobranca
              FROM alunos
              WHERE deleted_at IS NULL
              ORDER BY nome ASC'
@@ -60,7 +60,7 @@ final class StudentManagementRepository implements StudentManagementRepositoryIn
     {
         $studentStatement = $this->pdo->prepare(
             'SELECT id, usuario_id, nome, cpf, email, telefone, data_nascimento, matricula_codigo,
-                    data_matricula, situacao, ativo
+                    data_matricula, situacao, ativo, whatsapp_cobranca
              FROM alunos
              WHERE id = :id AND deleted_at IS NULL
              LIMIT 1'
@@ -124,11 +124,11 @@ final class StudentManagementRepository implements StudentManagementRepositoryIn
         $this->pdo->beginTransaction();
         try {
             $studentStatement = $this->pdo->prepare(
-                'INSERT INTO alunos (nome, cpf, email, telefone, data_nascimento, matricula_codigo, data_matricula, situacao, ativo)
-                 VALUES (:nome, NULLIF(:cpf, \'\'), NULLIF(:email, \'\'), NULLIF(:telefone, \'\'), :data_nascimento, :matricula_codigo, :data_matricula, :situacao, :ativo)
+                'INSERT INTO alunos (nome, cpf, email, telefone, data_nascimento, matricula_codigo, data_matricula, situacao, ativo, whatsapp_cobranca)
+                 VALUES (:nome, NULLIF(:cpf, \'\'), NULLIF(:email, \'\'), NULLIF(:telefone, \'\'), :data_nascimento, :matricula_codigo, :data_matricula, :situacao, :ativo, :whatsapp_cobranca)
                  RETURNING id'
             );
-            $studentStatement->execute($student);
+            $studentStatement->execute($student + ['whatsapp_cobranca' => 0]);
             $studentId = (int) $studentStatement->fetchColumn();
             $this->insertEnrollments($studentId, $enrollments);
             if ($portalAccess !== null) {
@@ -154,12 +154,12 @@ final class StudentManagementRepository implements StudentManagementRepositoryIn
             $studentStatement = $this->pdo->prepare(
                 'UPDATE alunos
                  SET nome = :nome, cpf = NULLIF(:cpf, \'\'), email = NULLIF(:email, \'\'),
-                     telefone = NULLIF(:telefone, \'\'), data_nascimento = :data_nascimento,
+                     whatsapp_cobranca = :whatsapp_cobranca, telefone = NULLIF(:telefone, \'\'), data_nascimento = :data_nascimento,
                      matricula_codigo = :matricula_codigo, data_matricula = :data_matricula,
                      updated_at = CURRENT_TIMESTAMP
                  WHERE id = :id AND deleted_at IS NULL'
             );
-            $studentStatement->execute($student + ['id' => $id]);
+            $studentStatement->execute($student + ['id' => $id, 'whatsapp_cobranca' => 0]);
 
             $currentStatement = $this->pdo->prepare(
                 "SELECT id FROM matriculas WHERE aluno_id = :student_id AND situacao IN ('ATIVA', 'SUSPENSA')"

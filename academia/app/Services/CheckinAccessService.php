@@ -20,10 +20,13 @@ final class CheckinAccessService
             return new AccessDecision('ALLOWED', 'LIBERADO', 'Mensalidade em dia.', true);
         }
         $due = new DateTimeImmutable($dueDate);
-        if ($due >= $today || !$blockDelinquency) {
+        if ($due >= $today) {
             return new AccessDecision('ALLOWED', 'LIBERADO', 'Mensalidade em dia.', true);
         }
         $daysLate = (int) $due->diff($today)->format('%a');
+        if (!$blockDelinquency) {
+            return new AccessDecision('ALLOWED_WARNING', 'LIBERADO COM ALERTA', "Mensalidade vencida há {$daysLate} dias. Bloqueio financeiro desativado.", true);
+        }
         if ($daysLate <= $toleranceDays) {
             $remaining = $toleranceDays - $daysLate;
             return new AccessDecision('ALLOWED_WARNING', 'LIBERADO COM ALERTA', "Mensalidade vencida há {$daysLate} dias. {$remaining} dias restantes de tolerância.", true);

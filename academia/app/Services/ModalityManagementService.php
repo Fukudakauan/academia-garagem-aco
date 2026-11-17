@@ -80,14 +80,14 @@ final class ModalityManagementService
             if ($day === false || $day < 1 || $day > 7) {
                 throw new InvalidArgumentException('Escolha um dia da semana válido.');
             }
-            if (!$this->isTime($start) || !$this->isTime($end)) {
+            if (!$this->isTime($start) || ($end !== '' && !$this->isTime($end))) {
                 throw new InvalidArgumentException('Informe horários válidos para a modalidade.');
             }
-            if ($end <= $start) {
+            if ($end !== '' && $end <= $start) {
                 throw new InvalidArgumentException('O horário final deve ser depois do horário inicial.');
             }
 
-            $key = $day . '|' . $start . '|' . $end;
+            $key = $day . '|' . $start;
             if (isset($seen[$key])) {
                 throw new InvalidArgumentException('Não é possível repetir o mesmo horário da modalidade.');
             }
@@ -95,9 +95,16 @@ final class ModalityManagementService
             $schedules[] = [
                 'dia_semana' => (int) $day,
                 'horario_inicio' => $start,
-                'horario_fim' => $end,
+                'horario_fim' => $end === '' ? null : $end,
                 'ativo' => true,
             ];
+            $note = trim((string) ($schedule['observacao'] ?? ''));
+            if (mb_strlen($note) > 150) {
+                throw new InvalidArgumentException('A observação do horário deve ter até 150 caracteres.');
+            }
+            if ($note !== '') {
+                $schedules[array_key_last($schedules)]['observacao'] = $note;
+            }
         }
 
         usort($schedules, static function (array $left, array $right): int {

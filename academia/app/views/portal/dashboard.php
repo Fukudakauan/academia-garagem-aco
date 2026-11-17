@@ -25,14 +25,19 @@ $studentStatusLabels = ['ATIVO' => 'Ativo', 'SUSPENSO' => 'Suspenso', 'CANCELADO
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#090a0c">
     <title>Portal do aluno — <?php echo e(app_config('app_name')); ?></title>
+    <link rel="icon" href="<?= e(asset('/assets/logo-garagem-aco.png')) ?>">
+    <link rel="stylesheet" href="<?= e(asset('/css/fonts.css')) ?>">
+    <link rel="stylesheet" href="<?= e(asset('/css/tokens.css')) ?>">
     <link rel="stylesheet" href="<?php echo e(asset('/css/app.css')); ?>">
 </head>
 <body class="portal-page">
-    <main class="portal-shell">
+    <a class="skip-link" href="#portal-content">Pular para o portal</a>
+    <main class="portal-shell" id="portal-content" tabindex="-1">
         <header class="portal-header">
             <div>
-                <a class="portal-brand" href="<?php echo e(url('/')); ?>">GARAGEM <strong>AÇO</strong></a>
+                <a class="portal-brand" href="<?php echo e(url('/')); ?>"><img src="<?= e(asset('/assets/logo-garagem-aco.png')) ?>" width="50" height="50" alt="">GARAGEM <strong>AÇO</strong></a>
                 <span class="portal-kicker">Portal do aluno</span>
             </div>
             <div class="portal-header__actions">
@@ -77,7 +82,7 @@ $studentStatusLabels = ['ATIVO' => 'Ativo', 'SUSPENSO' => 'Suspenso', 'CANCELADO
                 </article>
                 <article class="portal-summary-card">
                     <span>Total em aberto</span>
-                    <strong><?php echo e(format_money($portalSummary['total_em_aberto'] ?? '0.00')); ?></strong>
+                    <strong>R$ <?php echo e(format_money($portalSummary['total_em_aberto'] ?? '0.00')); ?></strong>
                 </article>
             </section>
 

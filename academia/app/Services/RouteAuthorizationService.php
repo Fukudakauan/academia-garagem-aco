@@ -40,6 +40,9 @@ final class RouteAuthorizationService
     private static function rolesFor(string $route): array
     {
         $isMutation = Request::method() !== 'GET' || preg_match('#/(novo|nova|criar|editar|excluir)/?#', $route) === 1;
+        if (str_starts_with($route, 'whatsapp')) {
+            return [Role::SUPER_ADMIN, Role::ADMIN];
+        }
         if (str_starts_with($route, 'financeiro')) {
             return [Role::SUPER_ADMIN, Role::ADMIN, Role::FINANCE];
         }

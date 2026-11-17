@@ -24,7 +24,7 @@ ob_start();
             <input type="email" name="email" required>
         </label>
         <label>Senha inicial *
-            <input type="password" name="senha" minlength="12" required>
+            <input type="password" name="senha" minlength="12" autocomplete="new-password" required>
             <span class="form-help">Use uma senha provisória com pelo menos 12 caracteres.</span>
         </label>
         <label>Perfil

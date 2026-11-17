@@ -52,7 +52,7 @@ ob_start();
         </label>
         <label>Origem
             <select name="origem">
-                <?php foreach (['MANUAL', 'BIOMETRIA', 'APP'] as $o): ?>
+                <?php foreach (['MANUAL', 'WEB', 'BIOMETRIA', 'QR_CODE'] as $o): ?>
                     <option value="<?php echo e($o); ?>"><?php echo e($o); ?></option>
                 <?php endforeach; ?>
             </select>

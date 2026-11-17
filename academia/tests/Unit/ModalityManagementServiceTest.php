@@ -11,6 +11,18 @@ use PHPUnit\Framework\TestCase;
 
 final class ModalityManagementServiceTest extends TestCase
 {
+    public function testAllowsStartOnlyAndPreservesLessonNote(): void
+    {
+        $repository = $this->createMock(ModalityManagementRepositoryInterface::class);
+        $repository->expects(self::once())->method('createModality')->with(
+            ['nome' => 'Muay Thai', 'descricao' => '', 'ativo' => true],
+            [['dia_semana' => 2, 'horario_inicio' => '20:00', 'horario_fim' => null, 'ativo' => true, 'observacao' => 'Fundamentos de Boxe']]
+        )->willReturn(12);
+        self::assertSame(12, (new ModalityManagementService($repository))->create([
+            'nome' => 'Muay Thai', 'horarios' => [['dia_semana' => 2, 'horario_inicio' => '20:00', 'observacao' => 'Fundamentos de Boxe']],
+        ]));
+    }
+
     public function testCreatesModalityWithWeeklySchedule(): void
     {
         $repository = $this->createMock(ModalityManagementRepositoryInterface::class);

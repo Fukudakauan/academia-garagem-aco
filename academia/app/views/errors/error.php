@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo e($title); ?> — <?php echo e(app_config('app_name')); ?></title>
+    <link rel="stylesheet" href="<?= e(asset('/css/fonts.css')) ?>">
+    <link rel="stylesheet" href="<?= e(asset('/css/tokens.css')) ?>">
     <link rel="stylesheet" href="<?php echo e(asset('/css/app.css')); ?>">
 </head>
 <body class="auth-page">

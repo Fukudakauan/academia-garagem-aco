@@ -125,7 +125,8 @@ $isEdit = false;
         </div>
         <form method="post" action="<?php echo e(url('/alunos/novo')); ?>" class="student-form" autocomplete="off">
             <input type="hidden" name="_csrf" value="<?php echo e(\Academia\Core\Csrf::token()); ?>">
-            <?php $portalPassword = $portalPassword ?? ''; include __DIR__ . '/_form-fields.php'; ?>
+            <?php $portalPassword = $portalPassword ?? '';
+include __DIR__ . '/_form-fields.php'; ?>
             <div class="form-actions">
                 <button type="submit" class="btn btn-primary">
                     <?php echo icon('save'); ?>
@@ -173,12 +174,15 @@ $isEdit = false;
             modal.classList.add('is-open');
             modal.setAttribute('aria-hidden', 'false');
             document.body.classList.add('modal-open');
+            document.querySelectorAll('.sidebar, .topbar').forEach(element => { element.inert = true; });
             modal.querySelector('input:not([type="hidden"])')?.focus();
         };
         const closeModal = () => {
             modal.classList.remove('is-open');
             modal.setAttribute('aria-hidden', 'true');
             document.body.classList.remove('modal-open');
+            document.querySelectorAll('.sidebar, .topbar').forEach(element => { element.inert = element.classList.contains('sidebar') && window.innerWidth <= 900; });
+            document.querySelector('[data-modal-open="novo-aluno"]')?.focus();
             if (window.location.hash === '#novo-aluno') history.replaceState(null, '', window.location.pathname + window.location.search);
         };
 
@@ -189,6 +193,12 @@ $isEdit = false;
         }));
         modal.querySelectorAll('[data-modal-close]').forEach((button) => button.addEventListener('click', closeModal));
         document.addEventListener('keydown', (event) => { if (event.key === 'Escape' && modal.classList.contains('is-open')) closeModal(); });
+        modal.addEventListener('keydown', event => {
+            if (event.key !== 'Tab') return;
+            const targets = [...modal.querySelectorAll('input:not([type="hidden"]), select, button, a[href]')].filter(element => !element.disabled && element.offsetParent !== null);
+            if (event.shiftKey && document.activeElement === targets[0]) { event.preventDefault(); targets.at(-1).focus(); }
+            else if (!event.shiftKey && document.activeElement === targets.at(-1)) { event.preventDefault(); targets[0].focus(); }
+        });
         if (window.location.hash === '#novo-aluno' || modal.dataset.openOnLoad === 'true') openModal();
     })();
 </script>
